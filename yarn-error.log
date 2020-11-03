@@ -1,0 +1,52 @@
+Arguments: 
+  C:\Users\Vanun\Desktop\Webpack\node_modules\node\bin\node.exe C:\Users\Vanun\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add -D webpack-dev-server
+
+PATH: 
+  C:\Users\Vanun\Desktop\Webpack\node_modules\.bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\Vanun\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\WebStorm 2020.1.2\bin;C:\Users\Vanun\AppData\Roaming\npm;C:\Program Files\JetBrains\WebStorm 2020.2.3\bin;
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  15.0.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\Users\Vanun\Desktop\Webpack\node_modules\node\bin\node.exe'
+
+npm manifest: 
+  {
+    "name": "src",
+    "version": "1.0.0",
+    "description": "webpack",
+    "main": "index.js",
+    "scripts": {
+      "watch": "webpack --watch",
+  
+      "dev": "npx webpack serve --mode development",
+      "build": "npx webpack --mode production"
+    },
+    "keywords": [
+      "js",
+      "webpack"
+    ],
+    "author": "Vanuni",
+    "license": "ISC",
+    "dependencies": {
+      "node": "^15.0.1",
+      "webpack": "^5.3.2",
+      "webpack-cli": "^4.1.0"
+    },
+    "devDependencies": {
+      "clean-webpack-plugin": "^3.0.0",
+      "html-webpack-plugin": "^4.5.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
