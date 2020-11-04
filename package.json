@@ -4,10 +4,10 @@
   "description": "webpack",
   "private": true,
   "scripts": {
-    "dev": "webpack --mode development",
-    "build": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
-    "start": "webpack serve --mode development"
+    "dev": "cross-env NODE_ENV=development webpack --mode development",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
+    "start": "cross-env NODE_ENV=development webpack serve --mode development"
   },
   "keywords": [
     "js",
@@ -16,6 +16,7 @@
   "author": "Vanuni",
   "license": "ISC",
   "dependencies": {
+    "cross-env": "^7.0.2",
     "jquery": "^3.5.1",
     "node": "^15.0.1",
     "normalize.css": "^8.0.1"
@@ -26,8 +27,14 @@
     "css-loader": "^5.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^4.5.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.2",
     "mini-css-extract-plugin": "^1.2.1",
+    "node-sass": "^5.0.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.4",
+    "sass-loader": "^10.0.5",
     "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.0.3",
     "webpack": "^5.3.2",
     "webpack-cli": "^4.1.0",
     "webpack-dev-server": "^3.11.0",

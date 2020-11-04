@@ -3,8 +3,44 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssertsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development' //true or false
+const isPro = !isDev
+
+const optimization = () => {
+    const config = {
+        splitChunks: {
+            chunks: "all" //оптимизацыя
+        }
+    }
+    if (isPro) {
+        config.minimizer = [
+            new OptimizeCssAssertsWebpackPlugin(), //  если в процесе development то оптимизуй css
+            new TerserWebpackPlugin()
+        ]
+    }
+    return config
+}
+const cssLoader = extra => {
+    const loaders = [
+        {
+            loader: MiniCssExtractPlugin.loader,// Webpack пропускает с право на лево css-loader позволяет понимат import-и
+            options: {            //style-loader дабавляет стил в html и устанавливаем их MiniCssExtractPlugin ето то же самое с
+                publicPath: 'public/path/to/',
+                hmr: isDev,    // в режиме разработки можем поменят оприделенные сушности без перезагруски
+                reloadALL: true
+            },
+        }, 'css-loader'// допуска расширениям
+    ]
+    if (extra) {
+        loaders.push(extra)
+    }
+    return loaders
+}
+const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
+//.../ hash позволяет создават названия файла свизи с контеетом присуствуешим в файле А [name] для  analytics для точка входа
 module.exports = {
     context: path.resolve(__dirname, 'src'), //контекст с которово исползует
     mode: 'development',//по умолчанию режим
@@ -13,8 +49,8 @@ module.exports = {
         analytics: './analytics.js'
     }, //точка входа
     output: {
-        filename: '[name].[contenthash].js', //соберет все js получим один фаил... А [name] для  analytics для точка входа
-        path: path.resolve(__dirname, 'dist')           //.../ contenrhash позволяет создават названия файла свизи с контеетом присуствуешим в файле
+        filename: filename('js'), //соберет все js получим один фаил...
+        path: path.resolve(__dirname, 'dist')
     },
     resolve: {
         extensions: ['.js', '.json', '.png'],
@@ -22,19 +58,19 @@ module.exports = {
             '@': path.resolve(__dirname, 'src')
         }
     },
-    optimization: {
-        splitChunks: {
-            chunks: "all" //оптимизацыя
-        }
-    },
+    optimization: optimization(),
+
     devServer: {
         port: 4200, //webpack-dev-server npm i w.d.c
         open: true,
-        hot:isDev
+        hot: isDev
     },
     plugins: [
         new HTMLWebpackPlugin({
-            template: './index.html' // синхронизирует html
+            template: './index.html', // синхронизирует html
+            minify: {
+                collapseWhitespace: isPro //if productions оптимизукт html
+            }
         }),
         new CleanWebpackPlugin(),      //кеширует dist
         new CopyWebpackPlugin({
@@ -46,23 +82,22 @@ module.exports = {
             ]
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css'
+            filename: filename('css')
         })
     ],
     module: {
         rules: [
             {
                 test: /\.css$/, //кагда встречаеть импорт css то исползуй определенный тип Loader-ов
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,// Webpack пропускает с право на лево css-loader позволяет понимат import-и
-                        options: {            //style-loader дабавляет стил в html и устанавливаем их MiniCssExtractPlugin ето то же самое с
-                            publicPath: 'public/path/to/',
-                            hmr:isDev,    // в режиме разработки можем поменят оприделенные сушности без перезагруски
-                            reloadALL:true
-                        },
-                    }, 'css-loader'// допуска расширениям
-                ]
+                use: cssLoader()
+            },
+            {
+                test: /\.less$/,
+                use: cssLoader('less-loader')
+            },
+            {
+                test: /\.s[ac]ss$/, //либо sass, scss... npm i -D node-sass sass-loader
+                use: cssLoader('sass-loader')
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
