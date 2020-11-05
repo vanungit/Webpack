@@ -21,7 +21,7 @@ npm manifest:
     "name": "src",
     "version": "1.0.0",
     "description": "webpack",
-    "main": "index.js",
+    "main": "index.jsx",
     "scripts": {
       "watch": "webpack --watch",
   

@@ -39,14 +39,26 @@ const cssLoader = extra => {
     }
     return loaders
 }
+const babelOptions = preset=>{
+   const opts = {
+        presets: [
+            '@babel/preset-env',
+        ],
+            plugins:['@babel/plugin-proposal-class-properties']
+    }
+    if(preset){
+        opts.presets.push(preset)
+    }
+    return opts
+}
 const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
 //.../ hash позволяет создават названия файла свизи с контеетом присуствуешим в файле А [name] для  analytics для точка входа
 module.exports = {
     context: path.resolve(__dirname, 'src'), //контекст с которово исползует
     mode: 'development',//по умолчанию режим
     entry: {
-        main: './index.js',
-        analytics: './analytics.js'
+        main: ['@babel/polyfill','./index.jsx'],
+        analytics: './analytics.ts'
     }, //точка входа
     output: {
         filename: filename('js'), //соберет все js получим один фаил...
@@ -59,7 +71,7 @@ module.exports = {
         }
     },
     optimization: optimization(),
-
+    devtool: isDev?'source-map':'', //webpack> configuration?devtool  map
     devServer: {
         port: 4200, //webpack-dev-server npm i w.d.c
         open: true,
@@ -110,7 +122,31 @@ module.exports = {
             {
                 test: /\.(xml)$/,
                 use: ['xml-loader']
-            }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: babelOptions()
+                }
+            },
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: babelOptions('@babel/preset-typescript')
+                }
+            },
+            {
+                test: /\.jsx$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: babelOptions('@babel/preset-react')
+                }
+            },
         ]
     }
 }
